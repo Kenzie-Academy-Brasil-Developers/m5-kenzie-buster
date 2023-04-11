@@ -17,7 +17,6 @@ class UserView(APIView):
         serializer = UserSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        user = User.objects.create_user(**serializer.validated_data)
-        serializer = UserSerializer(user)
+        serializer.save()
 
         return Response(serializer.data, status.HTTP_201_CREATED)
