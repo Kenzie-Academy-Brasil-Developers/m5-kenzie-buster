@@ -35,7 +35,8 @@ THIRD_PARTY_APPS = [
 ]
 
 MY_APPS = [
-    "users"
+    "users",
+    "movies"
 ]
 
 

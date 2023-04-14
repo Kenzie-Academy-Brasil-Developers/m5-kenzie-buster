@@ -8,16 +8,17 @@ class UserSerializer(serializers.Serializer):
 
     username = serializers.CharField(
         validators=[
-        UniqueValidator(
-        queryset=User.objects.all(), message="username already taken."
-        )
+            UniqueValidator(
+                queryset=User.objects.all(), message="username already taken."
+            )
         ]
     )
     email = serializers.CharField(
         validators=[
-        UniqueValidator(
-        queryset=User.objects.all(), message="email already registered."
-        )
+            UniqueValidator(
+                queryset=User.objects.all(),
+                message="email already registered."
+            )
         ]
     )
 
@@ -29,7 +30,7 @@ class UserSerializer(serializers.Serializer):
     is_superuser = serializers.BooleanField(read_only=True)
 
     def create(self, validated_data: dict) -> User:
-        if validated_data["is_employee"] == True:
+        if validated_data["is_employee"] is True:
             validated_data["is_superuser"] = True
 
         return User.objects.create_user(**validated_data)
