@@ -20,3 +20,7 @@ class UserSerializer(serializers.Serializer):
         if data["is_employee"] is True:
             data["is_superuser"] = True
         return data
+    
+class LoginSerializer(serializers.Serializer):
+    username = serializers.CharField(max_length=150, write_only=True)
+    password = serializers.CharField(max_length=127, write_only=True)
