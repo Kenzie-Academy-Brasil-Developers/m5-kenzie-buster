@@ -1,9 +1,11 @@
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404, render
 from rest_framework.views import APIView, Response, Request, status
+from movies.permissions import EmployeePermission, IsAdmOrUserPermission, UserOwnerPermission
 from users.models import User
 from users.serializers import UserSerializer, LoginSerializer
 from django.contrib.auth import authenticate
 from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.authentication import JWTAuthentication
 
 class UserView(APIView):
     def get(self, request: Request) -> Response:
@@ -38,4 +40,23 @@ class LoginView(APIView):
 
         return Response(token_dict, status.HTTP_200_OK)
 
+class UserIdView(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAdmOrUserPermission]
+
+    def get(self, request: Request, user_id: int) -> Response:
+        user = get_object_or_404(User, id=user_id)
+        serializer = UserSerializer(user)
+        
+        return Response(serializer.data, status.HTTP_200_OK)
+    
+    def patch(self, request: Request, user_id: int) -> Response:
+        user = get_object_or_404(User, id=user_id)
+        self.check_object_permissions(request, user)
+        serializer = UserSerializer(user, request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        
+        return Response(serializer.data, status.HTTP_200_OK)
+    
 # Create your views here.

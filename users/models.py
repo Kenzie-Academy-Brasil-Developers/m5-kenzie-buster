@@ -6,5 +6,5 @@ class User(AbstractUser):
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
     birthdate = models.DateField(null=True)
-    is_employee = models.BooleanField(default=False, null=True)
+    is_employee = models.BooleanField(null=True, default=False)
 # Create your models here.
