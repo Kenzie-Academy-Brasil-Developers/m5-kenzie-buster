@@ -1,9 +1,10 @@
 from django.shortcuts import render, get_object_or_404
 from rest_framework.views import APIView, Response, Request, status
 from movies.models import Movie
-from movies.permissions import EmployeePermission
-from movies.serializers import MovieSerializer
+from movies.permissions import EmployeePermission, OrdersPermission
+from movies.serializers import MovieSerializer, MovieOrderSerializer
 from rest_framework_simplejwt.authentication import JWTAuthentication
+from rest_framework.permissions import IsAuthenticated
 
 class MovieView(APIView):
     authentication_classes = [JWTAuthentication]
@@ -37,5 +38,17 @@ class MovieIdView(APIView):
         movie.delete()
         
         return Response(status=status.HTTP_204_NO_CONTENT)
+    
+class MovieOrderView(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [OrdersPermission]
+
+    def post(self, request: Request, movie_id: int) -> Response:
+        movie = get_object_or_404(Movie, id=movie_id)
+        serializer = MovieOrderSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save(user=request.user, movie=movie)
+        
+        return Response(serializer.data, status.HTTP_201_CREATED)
 
 # Create your views here.
