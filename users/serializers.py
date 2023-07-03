@@ -14,12 +14,12 @@ class UserSerializer(serializers.Serializer):
     is_superuser = serializers.BooleanField(read_only=True)
     password = serializers.CharField(write_only=True)
 
-    def validated_email(self, email):
+    def validate_email(self, email):
         if User.objects.filter(email=email).exists():
             raise serializers.ValidationError("email already registered.")
         return email
 
-    def validated_username(self, username):
+    def validate_username(self, username):
         if User.objects.filter(username=username).exists():
             raise serializers.ValidationError("username already taken.")
         return username
