@@ -1,11 +1,23 @@
 from rest_framework.views import APIView, status, Response, Request
 
-from .serializers import UserSerializer
+from users.models import User
+from .serializers import MovieSerializer
 
 from rest_framework.pagination import PageNumberPagination
+from .serializers import CustomJWTSerializer
+from rest_framework_simplejwt.views import TokenObtainPairView
+from .permissions import MyCustomPermission
 
 
-class UserView(APIView, PageNumberPagination):
+class LoginJWTView(TokenObtainPairView):
+    serializer_class = CustomJWTSerializer
+
+
+class LoginJWTView(TokenObtainPairView):
+    serializer_class = CustomJWTSerializer
+
+
+class MovieView(APIView, PageNumberPagination):
 
     def post(self, request: Request) -> Response:
         serializer = UserSerializer(data=request.data)
