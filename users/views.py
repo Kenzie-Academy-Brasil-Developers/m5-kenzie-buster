@@ -12,9 +12,6 @@ class UserView(APIView, PageNumberPagination):
 
         serializer.is_valid(raise_exception=True)
 
-        # user = User.objects.create(**serializer.validated_data)
         serializer.save()
-
-        # serializer = UserSerializer(user)
 
         return Response(serializer.data, status.HTTP_201_CREATED)

@@ -42,19 +42,19 @@ DJANGO_APPS = [
 ]
 THIRD_PARTY_APPS = [
     'rest_framework',
-    'rest_framework_simplejwt',
 ]
 
 MY_APPS = [
-    'users'
+    'users',
+    'movies'
 ]
 
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + MY_APPS
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=30),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=3000),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=70),
 
     'ALGORITHM': 'HS256',
     'SIGNING_KEY': SECRET_KEY,

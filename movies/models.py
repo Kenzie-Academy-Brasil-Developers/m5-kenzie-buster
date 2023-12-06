@@ -20,8 +20,10 @@ class Movie(models.Model):
         default=RatingOptions.G
     )
     synopsis = models.CharField(
-        blank=True, default="")
-    added_by = models.ForeignKey(
+        max_length=999,
+        blank=True,
+        default="")
+    user = models.ForeignKey(
         "users.User",
         on_delete=models.CASCADE,
         related_name="movies"
