@@ -7,6 +7,6 @@ class MyCustomPermission(permissions.BasePermission):
             return True
 
         return (
-          request.user.is_authenticated
-          and request.user.is_superuser
+                request.user.is_authenticated
+                and request.user.is_superuser
         )

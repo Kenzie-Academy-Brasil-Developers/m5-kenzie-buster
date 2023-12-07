@@ -6,9 +6,7 @@ from .models import Movie
 from rest_framework.pagination import PageNumberPagination
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
-from rest_framework.permissions import AllowAny
-# from .permissions import MyCustomPermission
-from rest_framework.permissions import IsAuthenticated
+from .permissions import MyCustomPermission
 
 
 # class LoginJWTView(TokenObtainPairView):
@@ -17,9 +15,9 @@ from rest_framework.permissions import IsAuthenticated
 
 class MovieView(APIView, PageNumberPagination):
     authentication_classes = (JWTAuthentication,)
+    permission_classes = (MyCustomPermission,)
 
     def post(self, request: Request) -> Response:
-        permission_classes = (IsAuthenticated,)
         serializer = MovieSerializer(data=request.data)
 
         serializer.is_valid(raise_exception=True)
@@ -29,15 +27,18 @@ class MovieView(APIView, PageNumberPagination):
 
         return Response(serializer.data, status.HTTP_201_CREATED)
 
-    def get(self):
-        permission_classes = (AllowAny,)
-
+    def get(self, request: Request) -> Response:
         movies = Movie.objects.all()
+        print(movies)
         return Response(MovieSerializer(movies, many=True).data, status.HTTP_200_OK)
 
 
 class MovieDetailView(APIView):
-    def get(self, movie_id: int) -> Response:
+    authentication_classes = (JWTAuthentication,)
+    permission_classes = (MyCustomPermission,)
+
+    def get(self, request: Request, movie_id: int) -> Response:
+
         error_message = "Not found."
         try:
             found_movie = Movie.objects.get(pk=movie_id)
@@ -53,12 +54,12 @@ class MovieDetailView(APIView):
     def delete(self, request: Request, movie_id: int) -> Response:
         error_message = "Not found."
         try:
-            remove_pet = Movie.objects.get(pk=movie_id)
+            remove_movie = Movie.objects.get(pk=movie_id)
         except Movie.DoesNotExist:
             return Response(
                 {"detail": error_message},
                 status.HTTP_404_NOT_FOUND
             )
 
-        remove_pet.delete()
+        remove_movie.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)

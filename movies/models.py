@@ -19,8 +19,7 @@ class Movie(models.Model):
         choices=RatingOptions.choices,
         default=RatingOptions.G
     )
-    synopsis = models.CharField(
-        max_length=999,
+    synopsis = models.TextField(
         blank=True,
         default="")
     user = models.ForeignKey(

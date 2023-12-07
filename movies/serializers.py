@@ -1,18 +1,16 @@
 from rest_framework import serializers
 from .models import RatingOptions
-from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-from users.serializers import UserSerializer
 from .models import Movie
-from users.models import User
 
 
-class CustomJWTSerializer(TokenObtainPairSerializer):
-    @classmethod
-    def get_token(cls, user):
-        token = super().get_token(user)
-        token["is_superuser"] = user.is_superuser
-        return token
-
+#
+# class CustomJWTSerializer(TokenObtainPairSerializer):
+#     @classmethod
+#     def get_token(cls, user):
+#         token = super().get_token(user)
+#         token["is_superuser"] = user.is_superuser
+#         return token
+#
 
 class MovieSerializer(serializers.Serializer):
     id = serializers.IntegerField(read_only=True)
@@ -28,15 +26,9 @@ class MovieSerializer(serializers.Serializer):
         max_length=999,
         allow_blank=True,
         default="")
-    added_by = serializers.EmailField(max_length=20, source="email", read_only=True)
+    added_by = serializers.CharField(max_length=20, source="user.email", read_only=True)
 
     def create(self, validated_data):
-        user_id = validated_data.get(user)
-
-        email = User.objects.get(id=user_id)
-        print(email)
-        movie = Movie.objects.create(**validated_data,
-                                     user=user_id)
-        print(movie, ".............................")
+        movie = Movie.objects.create(**validated_data)
 
         return movie
