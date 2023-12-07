@@ -4,10 +4,12 @@ from .models import MovieOrder
 
 class MovieOrderSerializer(serializers.Serializer):
     id = serializers.IntegerField(read_only=True)
+
     title = serializers.CharField(read_only=True, source="movie.title")
     price = serializers.DecimalField(max_digits=8, decimal_places=2)
-    purchased_by = serializers.CharField(read_only=True, source="user.username")
-    purchased_at = serializers.DateField(read_only=True)
+
+    purchased_by = serializers.CharField(read_only=True, source="user.email")
+    purchased_at = serializers.DateTimeField(read_only=True)
 
     def create(self, validated_data):
         movie_order = MovieOrder.objects.create(**validated_data)

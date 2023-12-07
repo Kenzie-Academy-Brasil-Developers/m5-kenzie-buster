@@ -1,23 +1,28 @@
 from rest_framework.views import APIView, status, Response, Request
 
-from .permissions import MyCustomPermission
 from rest_framework_simplejwt.authentication import JWTAuthentication
+from rest_framework.permissions import (
+    IsAdminUser,
+    IsAuthenticated,
+    IsAuthenticatedOrReadOnly,
+)
+
 from .serializers import MovieOrderSerializer
+from movies.models import Movie
+from django.shortcuts import get_object_or_404
 
 
 class MovieOrderView(APIView):
-    authentication_classes = [JWTAuthentication]
-    permission_classes = [MyCustomPermission]
+    authentication_classes = (JWTAuthentication,)
+    permission_classes = (IsAuthenticated,)
 
-    def post(self, request: Request) -> Response:
+    def post(self, request: Request, movie_id: int) -> Response:
+        movie = get_object_or_404(Movie, pk=movie_id)
+
         serializer = MovieOrderSerializer(data=request.data)
-
         serializer.is_valid(raise_exception=True)
 
-        print(request, "REQUEST")
-        print(request.data, "REQUEST DATA")
-
-        user_id = request.user.id
-        serializer.save(user_id=user_id)
+        user = request.user
+        serializer.save(user=user, movie=movie)
 
         return Response(serializer.data, status.HTTP_201_CREATED)
