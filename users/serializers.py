@@ -29,7 +29,12 @@ class UserSerializer(serializers.Serializer):
             user = User.objects.create_superuser(**validated_data)
         return user
 
+    def update(self, instance: User, validate_data: dict):
+        for key, value in validate_data.items():
+            if key == "password":
+                instance.set_password(value)
+            else:
+                setattr(instance, key, value)
+        instance.save()
+        return instance
 
-class LoginSerializer(serializers.Serializer):
-    username = serializers.CharField(max_length=150)
-    password = serializers.CharField(max_length=127)

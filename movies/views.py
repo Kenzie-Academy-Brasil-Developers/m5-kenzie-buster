@@ -6,7 +6,7 @@ from .models import Movie
 from rest_framework.pagination import PageNumberPagination
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
-from .permissions import MyCustomPermission
+from kenzie_buster.permissions import MyCustomPermission
 
 
 # class LoginJWTView(TokenObtainPairView):
@@ -29,8 +29,10 @@ class MovieView(APIView, PageNumberPagination):
 
     def get(self, request: Request) -> Response:
         movies = Movie.objects.all()
-        print(movies)
-        return Response(MovieSerializer(movies, many=True).data, status.HTTP_200_OK)
+
+        result = self.paginate_queryset(movies, request)
+        serializer = MovieSerializer(result, many=True)
+        return self.get_paginated_response(serializer.data)
 
 
 class MovieDetailView(APIView):
