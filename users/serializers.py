@@ -27,8 +27,8 @@ class UserSerializer(serializers.Serializer):
   return value
  
 
- def create(self, validate_date: dict) -> User:
-  is_employer = validate_date.get('is_employer', False)
-  validate_date['is_superuser'] = is_employer
+ def create(self, validated_data: dict) -> User:
+  is_employer = validated_data.get('is_employer', False)
+  validated_data['is_superuser'] = is_employer
 
-  return User.objects.create_user(**validate_date)
+  return User.objects.create_user(**validated_data)
