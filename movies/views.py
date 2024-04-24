@@ -3,8 +3,7 @@ from rest_framework.views import APIView, Request, Response, status
 from movies.models import Movie
 from movies.serializers import MovieSerializer
 from rest_framework_simplejwt.authentication import JWTAuthentication
-from users.permissions import IsSuperuserOrReadOnly
-from movies.permissions import IsMovieOwner
+from movies.permissions import IsSuperuserOrReadOnly
 from django.shortcuts import get_object_or_404
 
 # Create your views here.
