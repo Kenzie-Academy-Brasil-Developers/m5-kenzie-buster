@@ -32,3 +32,16 @@ class UserSerializer(serializers.Serializer):
   validated_data['is_superuser'] = is_employer
 
   return User.objects.create_user(**validated_data)
+ 
+ def update(self, instance: User, validated_data: dict):
+   instance.email = validated_data.get("email", instance.email)
+   instance.first_name = validated_data.get("firts_name", instance.first_name)
+   instance.last_name = validated_data.get("last_name", instance.last_name)
+   instance.birthdate = validated_data.get("birthdate", instance.birthdate)
+
+   is_employer = serializers.BooleanField(default=False)
+   is_superuser = serializers.BooleanField(read_only=True)
+
+   instance.save()
+
+   return instance
